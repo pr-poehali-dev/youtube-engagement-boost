@@ -1,247 +1,181 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import Icon from "@/components/ui/icon";
-import { useState } from "react";
-
-const services = [
-  {
-    id: 1,
-    title: "Просмотры",
-    description: "Бесплатная накрутка просмотров ваших видео",
-    icon: "Play",
-    amount: "100-1000",
-    time: "5-15 минут"
-  },
-  {
-    id: 2,
-    title: "Лайки",
-    description: "Добавляем лайки для повышения популярности",
-    icon: "ThumbsUp",
-    amount: "50-500",
-    time: "3-10 минут"
-  },
-  {
-    id: 3,
-    title: "Подписчики",
-    description: "Увеличиваем базу подписчиков канала",
-    icon: "Users",
-    amount: "10-100",
-    time: "10-30 минут"
-  },
-  {
-    id: 4,
-    title: "Комментарии",
-    description: "Генерируем живые комментарии под видео",
-    icon: "MessageCircle",
-    amount: "5-25",
-    time: "15-45 минут"
-  }
-];
-
-const recentBoosts = [
-  { id: 1, title: "Мой первый влог", views: "+1,247", time: "2 минуты назад" },
-  { id: 2, title: "Обзор нового iPhone", views: "+856", time: "5 минут назад" },
-  { id: 3, title: "Туториал по React", views: "+2,134", time: "8 минут назад" },
-  { id: 4, title: "Готовим дома", views: "+679", time: "12 минут назад" }
-];
-
-
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import Icon from '@/components/ui/icon';
 
 export default function Index() {
-  const [videoUrl, setVideoUrl] = useState("");
-  const [selectedService, setSelectedService] = useState("views");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [selectedService, setSelectedService] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [quantity, setQuantity] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!videoUrl) return;
+  const services = [
+    {
+      id: 'views',
+      name: 'Просмотры',
+      icon: 'Eye',
+      description: 'Увеличьте количество просмотров ваших видео',
+      minOrder: 1000,
+      price: '0.50 ₽'
+    },
+    {
+      id: 'likes',
+      name: 'Лайки',
+      icon: 'ThumbsUp',
+      description: 'Получите больше лайков под видео',
+      minOrder: 100,
+      price: '5.00 ₽'
+    },
+    {
+      id: 'subscribers',
+      name: 'Подписчики',
+      icon: 'Users',
+      description: 'Расширьте аудиторию вашего канала',
+      minOrder: 50,
+      price: '15.00 ₽'
+    },
+    {
+      id: 'comments',
+      name: 'Комментарии',
+      icon: 'MessageCircle',
+      description: 'Добавьте активность в комментарии',
+      minOrder: 10,
+      price: '25.00 ₽'
+    }
+  ];
 
-    setIsProcessing(true);
-    setProgress(0);
-
-    // Симуляция процесса накрутки
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsProcessing(false);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 500);
-  };
+  const pricingPlans = [
+    {
+      name: 'Стартер',
+      price: '1 990 ₽',
+      description: 'Для начинающих блогеров',
+      features: [
+        '10,000 просмотров',
+        '500 лайков',
+        '100 подписчиков',
+        '20 комментариев',
+        'Поддержка 24/7'
+      ],
+      popular: false
+    },
+    {
+      name: 'Профи',
+      price: '4 990 ₽',
+      description: 'Популярный выбор',
+      features: [
+        '50,000 просмотров',
+        '2,500 лайков',
+        '500 подписчиков',
+        '100 комментариев',
+        'Поддержка 24/7',
+        'Приоритетная обработка'
+      ],
+      popular: true
+    },
+    {
+      name: 'Эксперт',
+      price: '9 990 ₽',
+      description: 'Для серьезного роста',
+      features: [
+        '100,000 просмотров',
+        '5,000 лайков',
+        '1,000 подписчиков',
+        '200 комментариев',
+        'Поддержка 24/7',
+        'Приоритетная обработка',
+        'Персональный менеджер'
+      ],
+      popular: false
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Icon name="Play" className="text-youtube" size={32} />
-              <span className="text-2xl font-bold">Free YouTube Boost</span>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#boost" className="text-foreground hover:text-primary transition-colors">Накрутить</a>
-              <a href="#services" className="text-foreground hover:text-primary transition-colors">Услуги</a>
-              <a href="#recent" className="text-foreground hover:text-primary transition-colors">Последние</a>
-              <a href="#how-it-works" className="text-foreground hover:text-primary transition-colors">Как работает</a>
-            </div>
-            
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              <Icon name="Gift" className="mr-1" size={16} />
-              100% Бесплатно
-            </Badge>
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Icon name="Play" className="text-youtube" size={24} />
+            <span className="text-xl font-bold">YouTube Boost</span>
           </div>
+          <nav className="hidden md:flex items-center space-x-6">
+            <a href="#services" className="text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
+            <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Цены</a>
+            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">Как работает</a>
+            <Button>Заказать</Button>
+          </nav>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section with Form */}
-      <section id="boost" className="py-20 bg-gradient-to-br from-youtube/5 to-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Бесплатная накрутка <span className="text-youtube">YouTube</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Вставьте ссылку на ваше YouTube видео и получите бесплатные просмотры, лайки и подписчиков прямо сейчас!
-            </p>
+      {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-br from-youtube/10 to-background">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-youtube to-youtube-600 bg-clip-text text-transparent">
+            Быстрая накрутка для YouTube
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Увеличьте популярность вашего канала с помощью качественной накрутки просмотров, 
+            лайков, подписчиков и комментариев. Безопасно и эффективно.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button size="lg" className="bg-youtube hover:bg-youtube-600">
+              <Icon name="Rocket" className="mr-2" size={20} />
+              Начать накрутку
+            </Button>
+            <Button size="lg" variant="outline">
+              <Icon name="Play" className="mr-2" size={20} />
+              Посмотреть демо
+            </Button>
           </div>
 
-          {/* Main Form */}
-          <div className="max-w-2xl mx-auto">
-            <Card className="shadow-xl">
-              <CardHeader>
-                <CardTitle className="text-2xl text-center">Начать накрутку</CardTitle>
-                <CardDescription className="text-center">
-                  Вставьте ссылку на YouTube видео и выберите тип накрутки
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="video-url">Ссылка на YouTube видео</Label>
-                    <Input
-                      id="video-url"
-                      type="url"
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      value={videoUrl}
-                      onChange={(e) => setVideoUrl(e.target.value)}
-                      className="text-lg py-3"
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label>Выберите тип накрутки</Label>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {services.map((service) => (
-                        <div
-                          key={service.id}
-                          className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                            selectedService === service.id.toString() 
-                              ? 'border-youtube bg-youtube/5' 
-                              : 'border-border hover:border-youtube/50'
-                          }`}
-                          onClick={() => setSelectedService(service.id.toString())}
-                        >
-                          <div className="text-center">
-                            <Icon name={service.icon as any} className="text-youtube mx-auto mb-2" size={24} />
-                            <div className="font-medium text-sm">{service.title}</div>
-                            <div className="text-xs text-muted-foreground">{service.amount}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {isProcessing && (
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Накручиваем...</span>
-                        <span>{progress}%</span>
-                      </div>
-                      <Progress value={progress} className="h-2" />
-                    </div>
-                  )}
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-youtube hover:bg-youtube-600 text-white text-lg py-3"
-                    disabled={!videoUrl || isProcessing}
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Icon name="Loader2" className="mr-2 animate-spin" size={20} />
-                        Обрабатываем...
-                      </>
-                    ) : (
-                      <>
-                        <Icon name="Rocket" className="mr-2" size={20} />
-                        Начать бесплатную накрутку
-                      </>
-                    )}
-                  </Button>
-                </form>
-
-                {progress === 100 && (
-                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center text-green-800">
-                      <Icon name="CheckCircle" className="mr-2" size={20} />
-                      <span className="font-medium">Накрутка завершена успешно!</span>
-                    </div>
-                    <p className="text-green-700 text-sm mt-1">
-                      Ваше видео получило дополнительные просмотры. Результат будет виден через 5-10 минут.
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+            {[
+              { number: '50M+', label: 'Просмотров добавлено' },
+              { number: '2M+', label: 'Лайков накручено' },
+              { number: '500K+', label: 'Подписчиков привлечено' },
+              { number: '99.9%', label: 'Довольных клиентов' }
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl font-bold text-youtube">{stat.number}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Services Overview */}
+      {/* Services Section */}
       <section id="services" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Что мы предлагаем</h2>
+            <h2 className="text-4xl font-bold mb-4">Наши услуги</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Все услуги абсолютно бесплатны. Просто вставьте ссылку и получите результат!
+              Выберите нужную услугу для роста вашего YouTube канала
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => (
-              <Card key={service.id} className="text-center hover:shadow-lg transition-shadow">
-                <CardHeader>
+              <Card key={service.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-youtube/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Icon name={service.icon as any} className="text-youtube" size={32} />
                   </div>
-                  <CardTitle className="text-xl">{service.title}</CardTitle>
+                  <CardTitle>{service.name}</CardTitle>
                   <CardDescription>{service.description}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Количество:</span>
-                      <span className="font-medium">{service.amount}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Время:</span>
-                      <span className="font-medium">{service.time}</span>
-                    </div>
-                    <Badge className="w-full bg-green-100 text-green-800 hover:bg-green-100">
-                      <Icon name="Gift" className="mr-1" size={14} />
-                      Бесплатно
-                    </Badge>
+                <CardContent className="text-center">
+                  <div className="text-2xl font-bold text-youtube mb-2">от {service.price}</div>
+                  <div className="text-sm text-muted-foreground mb-4">
+                    Минимальный заказ: {service.minOrder.toLocaleString()}
                   </div>
+                  <Button className="w-full">Заказать</Button>
                 </CardContent>
               </Card>
             ))}
@@ -249,40 +183,80 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Recent Activity */}
-      <section id="recent" className="py-20 bg-muted/30">
+      {/* Order Form Section */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Последние накрутки</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Смотрите, как другие пользователи получают бесплатные просмотры прямо сейчас
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Icon name="Activity" className="mr-2 text-youtube" size={24} />
-                  Активность в реальном времени
-                </CardTitle>
+              <CardHeader className="text-center">
+                <CardTitle className="text-3xl">Оформить заказ</CardTitle>
+                <CardDescription>
+                  Заполните форму и мы начнем работу в течение 30 минут
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentBoosts.map((boost) => (
-                    <div key={boost.id} className="flex items-center justify-between p-3 bg-background rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <div>
-                          <div className="font-medium">{boost.title}</div>
-                          <div className="text-sm text-muted-foreground">{boost.time}</div>
-                        </div>
-                      </div>
-                      <Badge className="bg-youtube text-white">
-                        {boost.views}
-                      </Badge>
-                    </div>
-                  ))}
+              <CardContent className="space-y-6">
+                <div>
+                  <Label htmlFor="service">Выберите услугу</Label>
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите тип накрутки" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {services.map((service) => (
+                        <SelectItem key={service.id} value={service.id}>
+                          <div className="flex items-center">
+                            <Icon name={service.icon as any} className="mr-2" size={16} />
+                            {service.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="url">Ссылка на видео или канал</Label>
+                  <Input 
+                    id="url"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="quantity">Количество</Label>
+                  <Input 
+                    id="quantity"
+                    type="number"
+                    placeholder="Введите количество"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                  {selectedService && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Минимальный заказ: {services.find(s => s.id === selectedService)?.minOrder.toLocaleString()}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="comments">Дополнительные пожелания</Label>
+                  <Textarea 
+                    id="comments"
+                    placeholder="Укажите особые требования к заказу (необязательно)"
+                    className="min-h-20"
+                  />
+                </div>
+
+                <Button className="w-full bg-youtube hover:bg-youtube-600" size="lg">
+                  <Icon name="ShoppingCart" className="mr-2" size={20} />
+                  Оформить заказ
+                </Button>
+
+                <div className="text-center text-sm text-muted-foreground">
+                  <Icon name="Shield" className="inline mr-1" size={16} />
+                  Ваши данные защищены. Мы не передаем информацию третьим лицам.
                 </div>
               </CardContent>
             </Card>
@@ -290,34 +264,85 @@ export default function Index() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Тарифные планы</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Выберите оптимальный пакет для роста вашего канала
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.popular ? 'border-youtube scale-105' : ''}`}>
+                {plan.popular && (
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-youtube text-white">
+                    Популярный
+                  </Badge>
+                )}
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <div className="text-4xl font-bold text-youtube">{plan.price}</div>
+                  <CardDescription>{plan.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <div key={featureIndex} className="flex items-center">
+                        <Icon name="Check" className="text-green-500 mr-3" size={16} />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Button 
+                    className={`w-full mt-6 ${plan.popular ? 'bg-youtube hover:bg-youtube-600 text-white' : ''}`}
+                    variant={plan.popular ? 'default' : 'outline'}
+                  >
+                    Выбрать план
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
       <section id="how-it-works" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Как это работает</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Простой процесс в 3 шага для бесплатной накрутки
+              Простой процесс в 4 шага для быстрого роста вашего канала
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8">
             {[
               {
                 step: "1",
-                title: "Вставьте ссылку",
-                description: "Скопируйте ссылку на ваше YouTube видео и вставьте её в форму выше",
-                icon: "Link"
+                title: "Выберите услугу",
+                description: "Определите, что нужно для вашего канала: просмотры, лайки или подписчики",
+                icon: "Target"
               },
               {
                 step: "2", 
-                title: "Выберите тип",
-                description: "Выберите что накрутить: просмотры, лайки, подписчиков или комментарии",
-                icon: "MousePointer"
+                title: "Укажите ссылку",
+                description: "Добавьте ссылку на ваше видео или канал YouTube",
+                icon: "Link"
               },
               {
                 step: "3",
+                title: "Выберите пакет",
+                description: "Определите количество и выберите подходящий тарифный план",
+                icon: "Package"
+              },
+              {
+                step: "4",
                 title: "Получите результат",
-                description: "Ждите 5-15 минут и наслаждайтесь ростом популярности вашего видео",
+                description: "Наблюдайте за ростом метрик в режиме реального времени",
                 icon: "TrendingUp"
               }
             ].map((item, index) => (
@@ -333,34 +358,44 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features Section */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Почему выбирают нас</h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: "Gift",
-                title: "100% Бесплатно",
-                description: "Никаких скрытых платежей и подписок"
-              },
-              {
                 icon: "Zap",
-                title: "Быстрый результат",
-                description: "Получите накрутку за 5-15 минут"
+                title: "Быстрый старт",
+                description: "Начинаем работу в течение 30 минут после оплаты"
               },
               {
                 icon: "Shield",
-                title: "Полная безопасность",
-                description: "Ваш канал останется в безопасности"
+                title: "100% безопасно",
+                description: "Используем только проверенные методы без риска блокировки"
               },
               {
-                icon: "RefreshCw",
-                title: "Без ограничений",
-                description: "Накручивайте столько видео, сколько хотите"
+                icon: "Users",
+                title: "Живые пользователи",
+                description: "Работаем только с реальными аккаунтами, не ботами"
+              },
+              {
+                icon: "Clock",
+                title: "Поддержка 24/7",
+                description: "Наша команда готова помочь в любое время"
+              },
+              {
+                icon: "DollarSign",
+                title: "Доступные цены",
+                description: "Лучшие цены на рынке без скрытых комиссий"
+              },
+              {
+                icon: "Star",
+                title: "Высокое качество",
+                description: "Гарантируем качественную накрутку с удержанием"
               }
             ].map((feature, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
@@ -368,7 +403,7 @@ export default function Index() {
                   <div className="w-16 h-16 bg-youtube/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Icon name={feature.icon as any} className="text-youtube" size={32} />
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardTitle>{feature.title}</CardTitle>
                   <CardDescription>{feature.description}</CardDescription>
                 </CardHeader>
               </Card>
@@ -380,54 +415,78 @@ export default function Index() {
       {/* CTA Section */}
       <section className="py-20 bg-youtube text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Готовы увеличить популярность?</h2>
+          <h2 className="text-4xl font-bold mb-4">Готовы начать рост?</h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Вставьте ссылку на ваше YouTube видео и получите бесплатную накрутку прямо сейчас!
+            Присоединяйтесь к тысячам довольных клиентов, которые уже увеличили популярность своих каналов
           </p>
-          <Button size="lg" variant="secondary" onClick={() => document.getElementById('boost')?.scrollIntoView({ behavior: 'smooth' })}>
-            <Icon name="ArrowUp" className="mr-2" size={20} />
-            Накрутить видео бесплатно
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary">
+              <Icon name="Rocket" className="mr-2" size={20} />
+              Начать сейчас
+            </Button>
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-youtube">
+              <Icon name="Phone" className="mr-2" size={20} />
+              Связаться с нами
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="bg-background border-t py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Icon name="Play" className="text-youtube" size={24} />
-                <span className="text-xl font-bold">Free YouTube Boost</span>
+                <span className="text-xl font-bold">YouTube Boost</span>
               </div>
               <p className="text-muted-foreground">
-                Бесплатный сервис накрутки для YouTube. Быстро, безопасно, эффективно.
+                Профессиональный сервис накрутки для YouTube каналов
               </p>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Услуги</h4>
               <div className="space-y-2 text-muted-foreground">
-                <div>Бесплатная накрутка просмотров</div>
-                <div>Бесплатная накрутка лайков</div>
-                <div>Бесплатная накрутка подписчиков</div>
-                <div>Бесплатная накрутка комментариев</div>
+                <div>Накрутка просмотров</div>
+                <div>Накрутка лайков</div>
+                <div>Накрутка подписчиков</div>
+                <div>Накрутка комментариев</div>
               </div>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Информация</h4>
+              <h4 className="font-semibold mb-4">Поддержка</h4>
               <div className="space-y-2 text-muted-foreground">
-                <div>Как это работает</div>
-                <div>Безопасность</div>
                 <div>Часто задаваемые вопросы</div>
-                <div>Поддержка пользователей</div>
+                <div>Связаться с нами</div>
+                <div>Техническая поддержка</div>
+                <div>Отзывы клиентов</div>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Контакты</h4>
+              <div className="space-y-2 text-muted-foreground">
+                <div className="flex items-center">
+                  <Icon name="Mail" className="mr-2" size={16} />
+                  support@youtubeboost.ru
+                </div>
+                <div className="flex items-center">
+                  <Icon name="Phone" className="mr-2" size={16} />
+                  +7 (999) 123-45-67
+                </div>
+                <div className="flex items-center">
+                  <Icon name="Clock" className="mr-2" size={16} />
+                  24/7 поддержка
+                </div>
               </div>
             </div>
           </div>
           
           <div className="border-t mt-12 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Free YouTube Boost. Все права защищены.</p>
+            <p>&copy; 2024 YouTube Boost. Все права защищены.</p>
           </div>
         </div>
       </footer>
